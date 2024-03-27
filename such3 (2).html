@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<link href='https://fonts.googleapis.com/css?family=Agbalumo',  rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Kanit',  rel='stylesheet' type='text/css'>
+<link href='fonts.googleapis.com/css?family=Lato',  rel='stylesheet' type='text/css'>
+<style>
+body {
+  font-family: helvetica, sans-serif;
+  margin: 0 auto;
+  max-width: 600px;
+  background: url("https://i.imgur.com/bJQKF9U.jpg");
+}
+div {
+  height: 300px;
+  background-size: cover;
+  position: relative;
+  margin: 40px 0 0 0;
+  border-radius: 12px;
+}
+h1 {
+  font-family: 'Agbalumo';
+  text-align: center;
+  font-size: 75px;
+  color: skyblue;
+  margin: 60px 0 0 0;
+  
+}
+h2 {
+  text-align: center;
+  color: #bbbbbb;
+  margin: 0px 0 70px 0;
+  color: blue;
+  font-family: 'impact';
+}
+p {
+  color: cyan;
+  background: black;
+  background: linear-gradient(bottom, rgba(0, 0, 139,1), rgba(0, 0, 139,.4));
+  background: -webkit-linear-gradient(bottom, rgba(0, 0, 139,1), rgba(173, 216, 230,.4));
+  background: -moz-linear-gradient(bottom, rgba(0, 0, 139,1), rgba(173, 216, 230,.4));
+  padding: 10px;
+  line-height: 28px;
+  text-align: justify;
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+  height: 30px;
+  transition: height .5s;
+  -webkit-transition: height .5s;
+  -moz-transition: height .5s;
+  font-family: 'Kanit';
+}
+
+small {
+  opacity: 0;
+  color: skyblue;
+  font-family:'Lato';
+}
+
+.show-description p {
+  height: 150px;
+}
+
+.show-description small {
+  opacity: 1;
+}
+
+.first{
+  background-image: url("https://i.imgur.com/XBfa9Iw.jpg");
+}
+.second{
+  background-image: url("https://i.imgur.com/1PJxwHx.jpg");
+}
+.dessert{
+  background-image: url("https://i.imgur.com/64Dazi6.jpg");
+}
+.price {
+  float: right;
+}
+@media (max-width: 500px) {
+  h1 {
+    font-size: 50px;
+    margin-top: 20px;
+    line-height: 40px;
+  }
+  h2 {
+    font-size: 20px;
+    margin: 20px 0 30px 0;
+  }
+  div {
+    margin: 20px 12px 0 12px;
+  }
+  p {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  small {
+    font-size: 16px;
+  }
+}
+
+input {
+	font-size: 20px;
+	margin:30px 22px 22px;
+}
+
+
+</style>
+
+</head>
+
+<body>
+<h1>Such's Diner</h1>
+<h2>a New York City Pizzeria and Diner</h2>
+
+<div class="first">
+	<input type="number" min="0" style="width: 50px" class="quantities"> 
+  <p>Pizza Slice and Pie <span class="price">$3</span><br />
+  <small>Pizza! Everyone loves it! Here at out diner, it comes with many different toppings  including, pepperoni, mushroom, onions, chicken, sausage, cheese, vege, and custom if you'd like. </small></p>
+</div>
+
+ <div class="second">
+	 <input type="number" min="0" style="width: 50px" class="quantities">
+  <p>Wagyu Steak<span class="price">$10</span><br />
+  <small>Wagyu beef or steak, high marbling or thin lines of fat are distributed uniformly throughout the flesh, the cows used for Wagyu are fed very well, unlike other cows, so the meat is delicious.</small></p>
+</div>
+  
+ <div class="dessert">
+	 <input type="number" min="0" style="width: 50px" class="quantities">
+  <p>Pastries <span class="price">$8</span><br />
+  <small>Very nice dessert! Different types that can be ordered like, puffy, short crust, pate sucree, filo, rough puff, choux.</small></p>
+</div>
+<br><br>
+  <input id="Name" placeholder="Your Name">
+  <input id="Email" placeholder="Your Email">
+  <input id="submit" type="submit">
+<br><br>
+<script>
+  $('div').on('click', function() {
+      $(this).toggleClass('show-description');
+  });
+</script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+	import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-Pnq1dsoFrw-9k_06F2bfunbBPXyi-sE",
+      authDomain: "web3such.firebaseapp.com",
+      projectId: "web3such",
+      storageBucket: "web3such.appspot.com",
+      messagingSenderId: "219114747237",
+      appId: "1:219114747237:web:2d519ced3b4d6777325d8c"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+	const db = getDatabase(app);
+	const Name = document.querySelector("#Name") 
+	const Email = document.querySelector("#Email")
+	document.querySelector('#submit').addEventListener('click', Submit)
+	const quantities = document.querySelectorAll(".quantities")
+	const prices = document.querySelectorAll(".price") 
+	const itemsList = ["Pizza Slice and Pie", "Wagyu Steak", "Pastries"]
+	
+	function Submit() {
+	  const timestamp = buildTimestamp()
+	  let total = 0	
+  	  let cart = { }
+  	  for  (let i=0; i<quantities.length; i=i+1) {
+  	  	if (quantities[i].value != "0" && quantities[i].value != "") {
+			let price = prices[i].innerHTML.replace('$', '')
+			total = total + quantities[i].value * price	
+  	  		cart[itemsList[i]] = parseInt(quantities[i].value) 
+  	  	}
+  	  	quantities[i].value = ""
+  	  }
+
+	  set(ref(db, timestamp), {
+		  Name: Name.value,
+	      email: Email.value,
+		  cart:cart,
+		  totalPrice: total,
+		  paid: "not yet",
+		  
+	  });
+
+
+	  Name.value = ""
+	  Email.value = ""
+	} 
+	
+  function buildTimestamp() {
+    const now = new Date();
+    let timestamp = now.getFullYear().toString() + "/";
+    //const month = now.toLocaleString('default', { month: 'long' });
+
+    let month = now.getMonth()+1   //add 1 because Javascript uses 0 for January
+    month = month.toString()
+    month = addLeadingZero(month)
+    timestamp += month + "/"; 
+
+    let date = now.getDate().toString()
+    date = addLeadingZero(date)
+    timestamp += date + "/";
+
+    let hours = now.getHours().toString()
+    hours = addLeadingZero(hours)
+    timestamp += hours + ":";
+
+    let minutes = now.getMinutes().toString()
+    minutes = addLeadingZero(minutes)
+    timestamp += minutes + ":";
+
+    let seconds = now.getSeconds().toString()
+    seconds = addLeadingZero(seconds)
+    timestamp += seconds;
+
+    return timestamp
+  }
+
+  function addLeadingZero(units) {
+  	if (units.length < 2) {
+  		units = "0" + units
+  	}
+  	return units
+  }
+	
+	
+  </script>
+
+</body>
+
+
+
+
